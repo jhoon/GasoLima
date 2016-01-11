@@ -176,13 +176,11 @@ public class GasStationListActivity extends AppCompatActivity
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_PERMISSION);
         } else {
-            Log.i(TAG, "onConnected: permission granted.");
             // Permission has been granted, continue as usual
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (location != null) {
                 String locString = location.getLatitude() + " " + location.getLongitude();
                 Toast.makeText(this, locString, Toast.LENGTH_LONG).show();
-                Log.i(TAG, "onConnected: " + locString);
             }
         }
     }
@@ -212,9 +210,7 @@ public class GasStationListActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i(TAG, "onStart: WHAT");
         mGoogleApiClient.connect();
-        Log.i(TAG, "onStart: WHATTHEWAT");
     }
 
     @Override
