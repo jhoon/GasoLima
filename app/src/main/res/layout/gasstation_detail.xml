@@ -1,9 +1,55 @@
-<TextView android:id="@+id/gasstation_detail"
-          style="?android:attr/textAppearanceLarge"
-          xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:padding="16dp"
-          android:textIsSelectable="true"
-          tools:context="pe.applica.gasolima.GasStationDetailFragment"/>
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detail_additional_pane"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/gasstation_detail"
+        style="?android:attr/textAppearanceLarge"
+        android:padding="16dp"
+        android:textIsSelectable="true"
+        tools:context="pe.applica.gasolima.GasStationDetailFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/detail_address_label_textview"
+        android:fontFamily="sans-serif"
+        android:gravity="center_vertical"
+        android:text="@string/label_address"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/detail_address_textview"
+        android:gravity="center_vertical"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        app:layout_gravity="fill"
+        tools:text="This will be the address of the Station"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/detail_distance_label_textview"
+        android:fontFamily="sans-serif"
+        android:gravity="center_vertical"
+        android:text="@string/label_distance"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/detail_distance_textview"
+        android:gravity="center_vertical"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        app:layout_gravity="fill"
+        tools:text="100m"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
