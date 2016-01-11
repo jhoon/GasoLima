@@ -31,6 +31,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
     compile "com.android.support:support-v4:${supportLibVersion}"
     compile "com.android.support:recyclerview-v7:${supportLibVersion}"
+    compile "com.android.support:gridlayout-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.google.android.gms:play-services-ads:${playServicesVersion}"
     compile "com.google.android.gms:play-services-maps:${playServicesVersion}"
