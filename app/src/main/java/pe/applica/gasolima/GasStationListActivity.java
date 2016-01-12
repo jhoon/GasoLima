@@ -28,7 +28,6 @@ import com.google.android.gms.location.LocationServices;
 
 import java.util.List;
 
-import pe.applica.gasolima.dummy.DummyContent;
 import pe.applica.gasolima.network.GasoLimaAPI;
 import pe.applica.gasolima.network.model.BaseResponse;
 import pe.applica.gasolima.network.model.Venue;
@@ -57,6 +56,7 @@ public class GasStationListActivity extends AppCompatActivity
      */
     private boolean mTwoPane;
     private GoogleApiClient mGoogleApiClient;
+    private RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +79,7 @@ public class GasStationListActivity extends AppCompatActivity
 
         View recyclerView = findViewById(R.id.gasstation_list);
         assert recyclerView != null;
-        setupRecyclerView((RecyclerView)recyclerView);
+        mRecyclerView = (RecyclerView)recyclerView;
 
         if (findViewById(R.id.gasstation_detail_container) != null) {
             // The detail container view will be present only in the
@@ -106,6 +106,7 @@ public class GasStationListActivity extends AppCompatActivity
                     for (Venue venue : venues) {
                         Log.i(TAG, "onResponse: venues~ " + venue.venue.id + " nombre: " + venue.venue.nombre);
                     }
+                    mRecyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(venues));
                 }
             }
 
@@ -128,15 +129,15 @@ public class GasStationListActivity extends AppCompatActivity
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(null));
     }
 
     public class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<Venue> mValues;
 
-        public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
+        public SimpleItemRecyclerViewAdapter(List<Venue> items) {
             mValues = items;
         }
 
@@ -150,15 +151,15 @@ public class GasStationListActivity extends AppCompatActivity
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+            holder.mIdView.setText(mValues.get(position).venue.GAS84);
+            holder.mContentView.setText(mValues.get(position).venue.distancia);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(GasStationDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        arguments.putString(GasStationDetailFragment.ARG_ITEM_ID, holder.mItem.venue.nombre);
                         GasStationDetailFragment fragment = new GasStationDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -167,7 +168,7 @@ public class GasStationListActivity extends AppCompatActivity
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, GasStationDetailActivity.class);
-                        intent.putExtra(GasStationDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        intent.putExtra(GasStationDetailFragment.ARG_ITEM_ID, holder.mItem.venue.nombre);
 
                         context.startActivity(intent);
                     }
@@ -184,7 +185,7 @@ public class GasStationListActivity extends AppCompatActivity
             public final View mView;
             public final TextView mIdView;
             public final TextView mContentView;
-            public DummyContent.DummyItem mItem;
+            public Venue mItem;
 
             public ViewHolder(View view) {
                 super(view);
