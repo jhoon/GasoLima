@@ -29,6 +29,14 @@ import com.google.android.gms.location.LocationServices;
 import java.util.List;
 
 import pe.applica.gasolima.dummy.DummyContent;
+import pe.applica.gasolima.network.GasoLimaAPI;
+import pe.applica.gasolima.network.model.BaseResponse;
+import pe.applica.gasolima.network.model.Venue;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.GsonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 /**
  * An activity representing a list of GasStations. This activity
@@ -80,6 +88,33 @@ public class GasStationListActivity extends AppCompatActivity
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+
+        // Connecting to retrofit
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.app_endpoint))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        GasoLimaAPI service = retrofit.create(GasoLimaAPI.class);
+        Call<BaseResponse> stationsCall = service.getStations(-12.08, -76.99);
+        stationsCall.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
+                if (response.isSuccess()) {
+                    Log.i(TAG, "onResponse: WE DID IT!!!");
+                    List<Venue> venues = response.body().response;
+                    for (Venue venue : venues) {
+                        Log.i(TAG, "onResponse: venues~ " + venue.venue.id + " nombre: " + venue.venue.nombre);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.e(TAG, "onFailure: ZOMG, ERROR!", t);
+            }
+        });
+
     }
 
     void buildGoogleApiClient() {
