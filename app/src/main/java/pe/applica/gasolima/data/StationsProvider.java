@@ -18,10 +18,12 @@ public class StationsProvider extends ContentProvider {
     public static final int STATION_ID = 102;
 
     public static final UriMatcher sUriMatcher = buildUriMatcher();
+    private StationsDbHelper mOpenHelper;
 
     @Override
     public boolean onCreate() {
-        return false;
+        mOpenHelper = StationsDbHelper.getInstance(getContext());
+        return true;
     }
 
     @Nullable
