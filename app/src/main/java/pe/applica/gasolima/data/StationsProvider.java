@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
+import pe.applica.gasolima.data.StationsContract.StationEntry;
+
 /**
  * Provider for the Stations List and the Station Detail
  * Created by jhoon on 1/14/16.
@@ -35,7 +37,22 @@ public class StationsProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(Uri uri) {
-        return null;
+        final int match = sUriMatcher.match(uri);
+        String returnType;
+
+        switch (match) {
+            case STATION:
+            case STATION_NEARBY:
+                returnType = StationEntry.CONTENT_TYPE;
+                break;
+            case STATION_ID:
+                returnType = StationEntry.CONTENT_ITEM_TYPE;
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        return returnType;
     }
 
     @Nullable
