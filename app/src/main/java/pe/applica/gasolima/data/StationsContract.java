@@ -11,7 +11,6 @@ import android.provider.BaseColumns;
 public class StationsContract {
     public static final String CONTENT_AUTHORITY = "pe.apptribe.limametro";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-;
     public static final String PATH_STATION = "station";
 
     /* Inner class that defines the table contents of the station table */
@@ -44,7 +43,7 @@ public class StationsContract {
         }
 
         public static Uri buildNearbyStationsUri(String latitude, String longitude){
-            return CONTENT_URI.buildUpon().appendPath(latitude).appendPath(longitude).build();
+            return CONTENT_URI.buildUpon().appendPath("nearby").appendPath(latitude).appendPath(longitude).build();
         }
 
         public static String getLatitudeFromUri(Uri uri){
