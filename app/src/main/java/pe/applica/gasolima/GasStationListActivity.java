@@ -60,6 +60,7 @@ public class GasStationListActivity extends AppCompatActivity
     private boolean mTwoPane;
     private GoogleApiClient mGoogleApiClient;
     private RecyclerView mRecyclerView;
+    private Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,8 +219,9 @@ public class GasStationListActivity extends AppCompatActivity
             // Permission has been granted, continue as usual
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (location != null) {
-                String locString = location.getLatitude() + " " + location.getLongitude();
-                Toast.makeText(this, locString, Toast.LENGTH_LONG).show();
+                Log.d(TAG, "onConnected: location obtained, lat " + location.getLatitude() +
+                        ", long " + location.getLongitude());
+                mLastLocation = location;
             }
         }
     }
