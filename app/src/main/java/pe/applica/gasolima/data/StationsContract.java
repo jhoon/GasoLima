@@ -9,7 +9,7 @@ import android.provider.BaseColumns;
  * Created by jhoon on 1/13/16.
  */
 public class StationsContract {
-    public static final String CONTENT_AUTHORITY = "pe.apptribe.limametro";
+    public static final String CONTENT_AUTHORITY = "pe.applica.gasolima";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_STATION = "station";
 
@@ -47,10 +47,10 @@ public class StationsContract {
         }
 
         public static String getLatitudeFromUri(Uri uri){
-            return uri.getPathSegments().get(1);
+            return uri.getPathSegments().get(2);
         }
         public static String getLongitudeFromUri(Uri uri){
-            return uri.getPathSegments().get(2);
+            return uri.getPathSegments().get(3);
         }
     }
 }
