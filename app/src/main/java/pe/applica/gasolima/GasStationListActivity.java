@@ -4,12 +4,15 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -46,7 +49,7 @@ import retrofit.Retrofit;
  * item details side-by-side using two vertical panes.
  */
 public class GasStationListActivity extends AppCompatActivity
-        implements ConnectionCallbacks, OnConnectionFailedListener{
+        implements ConnectionCallbacks, OnConnectionFailedListener, LoaderCallbacks<Cursor> {
     private static final String TAG = "GasStationListActivity";
     public static final int LOCATION_PERMISSION = 0;
 
@@ -257,4 +260,18 @@ public class GasStationListActivity extends AppCompatActivity
         super.onStop();
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
 }
