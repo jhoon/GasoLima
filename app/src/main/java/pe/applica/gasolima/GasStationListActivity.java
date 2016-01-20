@@ -13,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -32,7 +33,7 @@ import com.google.android.gms.location.LocationServices;
 
 import java.util.List;
 
-import pe.applica.gasolima.data.StationsContract;
+import pe.applica.gasolima.data.StationsContract.StationEntry;
 import pe.applica.gasolima.network.GasoLimaAPI;
 import pe.applica.gasolima.network.model.BaseResponse;
 import pe.applica.gasolima.network.model.Venue;
@@ -64,6 +65,13 @@ public class GasStationListActivity extends AppCompatActivity
     private RecyclerView mRecyclerView;
     private Location mLastLocation;
     private SimpleItemRecyclerViewAdapter mStationsAdapter;
+
+    private static final String[] STATION_COLUMNS = {
+            StationEntry.TABLE_NAME + "." + StationEntry._ID,
+            StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_ID,
+            StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_NAME,
+            StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_DISTANCE
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -268,7 +276,18 @@ public class GasStationListActivity extends AppCompatActivity
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
+        Uri stationsNearby;
+
+        if (mLastLocation != null) {
+            stationsNearby = StationEntry
+                    .buildNearbyStationsUri(Double.toString(mLastLocation.getLatitude()),
+                            Double.toString(mLastLocation.getLongitude()));
+        } else {
+            // Setting a default origin location for when no location was obtained
+            stationsNearby = StationEntry.buildNearbyStationsUri("-12.08", "-76.99");
+        }
+
+        return new CursorLoader(this, stationsNearby, STATION_COLUMNS, null, null, null);
     }
 
     @Override
