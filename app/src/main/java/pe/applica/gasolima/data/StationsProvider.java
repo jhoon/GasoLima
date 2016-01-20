@@ -1,6 +1,7 @@
 package pe.applica.gasolima.data;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -31,7 +32,40 @@ public class StationsProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
+        Cursor returnCursor;
+        switch (sUriMatcher.match(uri)) {
+            case STATION: {
+                returnCursor = mOpenHelper.getReadableDatabase().query(
+                        StationEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null, null,
+                        sortOrder
+                );
+                break;
+            }
+            case STATION_ID: {
+                returnCursor = mOpenHelper.getReadableDatabase().query(
+                        StationEntry.TABLE_NAME,
+                        projection,
+                        StationEntry._ID + " = '" + ContentUris.parseId(uri) + "'",
+                        null, null, null,
+                        sortOrder
+                );
+                break;
+            }
+            case STATION_NEARBY: {
+                returnCursor = getNearbyStations(uri, projection);
+                break;
+            }
+            default:
+                throw new UnsupportedOperationException("Unknown Uri: " + uri);
+        }
+        if (getContext() != null) {
+            returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        }
+        return returnCursor;
     }
 
     @Nullable
@@ -85,5 +119,29 @@ public class StationsProvider extends ContentProvider {
         matcher.addURI(authority, StationsContract.PATH_STATION + "/#", STATION_ID);
 
         return matcher;
+    }
+
+    /**
+     * Returns a cursor with nearby stations
+     * @param uri Uri with current location
+     * @param projection columns to be extracted from the db
+     * @return a cursor with the resulting stations
+     */
+    private Cursor getNearbyStations(Uri uri, String[] projection) {
+        String latitude = StationEntry.getLatitudeFromUri(uri);
+        String longitude = StationEntry.getLongitudeFromUri(uri);
+
+        // Set the ordering by distance
+        String sOrderByLatLong = " ABS(" + StationEntry.COLUMN_LATITUDE + " - "+ latitude +") + " +
+                " ABS(" + StationEntry.COLUMN_LONGITUDE + " - " + longitude +") ASC ";
+
+        return mOpenHelper.getReadableDatabase().query(
+                StationEntry.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                sOrderByLatLong);
     }
 }
