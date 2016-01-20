@@ -66,6 +66,11 @@ public class GasStationListActivity extends AppCompatActivity
     private Location mLastLocation;
     private SimpleItemRecyclerViewAdapter mStationsAdapter;
 
+    /**
+     * Identifier for the lader
+     */
+    private static final int STATIONS_LOADER = 0;
+
     private static final String[] STATION_COLUMNS = {
             StationEntry.TABLE_NAME + "." + StationEntry._ID,
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_ID,
@@ -103,6 +108,8 @@ public class GasStationListActivity extends AppCompatActivity
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+
+        getSupportLoaderManager().initLoader(STATIONS_LOADER, null, this);
 
         // Connecting to retrofit
         Retrofit retrofit = new Retrofit.Builder()
