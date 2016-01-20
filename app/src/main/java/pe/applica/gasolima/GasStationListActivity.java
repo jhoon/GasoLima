@@ -152,6 +152,7 @@ public class GasStationListActivity extends AppCompatActivity
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final List<Venue> mValues;
+        private Cursor mCursor;
 
         public SimpleItemRecyclerViewAdapter(List<Venue> items) {
             mValues = items;
@@ -195,6 +196,11 @@ public class GasStationListActivity extends AppCompatActivity
         @Override
         public int getItemCount() {
             return mValues.size();
+        }
+
+        public void swapCursor(Cursor newCursor) {
+            mCursor = newCursor;
+            notifyDataSetChanged();
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
@@ -292,11 +298,11 @@ public class GasStationListActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        mStationsAdapter.swapCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        mStationsAdapter.swapCursor(null);
     }
 }
