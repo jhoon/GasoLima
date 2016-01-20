@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -31,6 +32,7 @@ import com.google.android.gms.location.LocationServices;
 
 import java.util.List;
 
+import pe.applica.gasolima.data.StationsContract;
 import pe.applica.gasolima.network.GasoLimaAPI;
 import pe.applica.gasolima.network.model.BaseResponse;
 import pe.applica.gasolima.network.model.Venue;
@@ -61,6 +63,7 @@ public class GasStationListActivity extends AppCompatActivity
     private GoogleApiClient mGoogleApiClient;
     private RecyclerView mRecyclerView;
     private Location mLastLocation;
+    private SimpleItemRecyclerViewAdapter mStationsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +113,8 @@ public class GasStationListActivity extends AppCompatActivity
                     for (Venue venue : venues) {
                         Log.i(TAG, "onResponse: venues~ " + venue.venue.id + " nombre: " + venue.venue.nombre);
                     }
-                    mRecyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(venues));
+                    mStationsAdapter = new SimpleItemRecyclerViewAdapter(venues);
+                    mRecyclerView.setAdapter(mStationsAdapter);
                 }
             }
 
