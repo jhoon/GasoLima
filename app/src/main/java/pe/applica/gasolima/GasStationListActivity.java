@@ -1,6 +1,7 @@
 package pe.applica.gasolima;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -31,6 +32,7 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.location.LocationServices;
 
 import java.util.List;
+import java.util.Vector;
 
 import pe.applica.gasolima.data.StationsContract.StationEntry;
 import pe.applica.gasolima.network.GasoLimaAPI;
@@ -77,11 +79,18 @@ public class GasStationListActivity extends AppCompatActivity
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_DISTANCE
     };
 
+    // These are indices tied to STATION_COLUMNS
+    static final int COL_STATION_ID = 0;
+    static final int COL_STATION_SERVER_ID = 1;
+    static final int COL_STATION_NAME = 2;
+    static final int COL_STATION_DISTANCE = 3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gasstation_list);
         buildGoogleApiClient();
+        mStationsAdapter = new SimpleItemRecyclerViewAdapter(null);
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -99,6 +108,7 @@ public class GasStationListActivity extends AppCompatActivity
         View recyclerView = findViewById(R.id.gasstation_list);
         assert recyclerView != null;
         mRecyclerView = (RecyclerView)recyclerView;
+        mRecyclerView.setAdapter(mStationsAdapter);
 
         if (findViewById(R.id.gasstation_detail_container) != null) {
             // The detail container view will be present only in the
@@ -109,35 +119,6 @@ public class GasStationListActivity extends AppCompatActivity
         }
 
         getSupportLoaderManager().initLoader(STATIONS_LOADER, null, this);
-
-        // Connecting to retrofit
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.app_endpoint))
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        GasoLimaAPI service = retrofit.create(GasoLimaAPI.class);
-        Call<BaseResponse> stationsCall = service.getStations(-12.08, -76.99);
-        stationsCall.enqueue(new Callback<BaseResponse>() {
-            @Override
-            public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
-                if (response.isSuccess()) {
-                    Log.i(TAG, "onResponse: WE DID IT!!!");
-                    List<Venue> venues = response.body().response;
-                    for (Venue venue : venues) {
-                        Log.i(TAG, "onResponse: venues~ " + venue.venue.id + " nombre: " + venue.venue.nombre);
-                    }
-                    mStationsAdapter = new SimpleItemRecyclerViewAdapter(venues);
-                    mRecyclerView.setAdapter(mStationsAdapter);
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Log.e(TAG, "onFailure: ZOMG, ERROR!", t);
-            }
-        });
-
     }
 
     void buildGoogleApiClient() {
@@ -173,16 +154,18 @@ public class GasStationListActivity extends AppCompatActivity
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).venue.GAS84);
-            holder.mContentView.setText(mValues.get(position).venue.distancia);
+            mCursor.moveToPosition(position);
+
+//            holder.mItem = mValues.get(position);
+            holder.mIdView.setText(mCursor.getString(COL_STATION_DISTANCE));
+            holder.mContentView.setText(mCursor.getString(COL_STATION_NAME));
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(GasStationDetailFragment.ARG_ITEM_ID, holder.mItem.venue.nombre);
+                        arguments.putString(GasStationDetailFragment.ARG_ITEM_ID, mCursor.getString(COL_STATION_NAME));
                         GasStationDetailFragment fragment = new GasStationDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -191,7 +174,7 @@ public class GasStationListActivity extends AppCompatActivity
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, GasStationDetailActivity.class);
-                        intent.putExtra(GasStationDetailFragment.ARG_ITEM_ID, holder.mItem.venue.nombre);
+                        intent.putExtra(GasStationDetailFragment.ARG_ITEM_ID, mCursor.getString(COL_STATION_NAME));
 
                         context.startActivity(intent);
                     }
@@ -201,12 +184,17 @@ public class GasStationListActivity extends AppCompatActivity
 
         @Override
         public int getItemCount() {
-            return mValues.size();
+            if (mCursor == null) return 0;
+            return mCursor.getCount();
         }
 
         public void swapCursor(Cursor newCursor) {
             mCursor = newCursor;
             notifyDataSetChanged();
+        }
+
+        public Cursor getCursor() {
+            return mCursor;
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
@@ -246,6 +234,49 @@ public class GasStationListActivity extends AppCompatActivity
                 Log.d(TAG, "onConnected: location obtained, lat " + location.getLatitude() +
                         ", long " + location.getLongitude());
                 mLastLocation = location;
+
+                // Connecting to retrofit
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(getString(R.string.app_endpoint))
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                GasoLimaAPI service = retrofit.create(GasoLimaAPI.class);
+                Call<BaseResponse> stationsCall = service.getStations(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                stationsCall.enqueue(new Callback<BaseResponse>() {
+                    @Override
+                    public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
+                        if (response.isSuccess()) {
+                            Log.i(TAG, "onResponse: WE DID IT!!!");
+                            List<Venue> venues = response.body().response;
+                            ContentValues[] values = new ContentValues[venues.size()];
+                            int i = 0;
+
+                            for (Venue venue : venues) {
+                                Log.i(TAG, "onResponse: venues~ " + venue.venue.id + " nombre: " + venue.venue.nombre);
+
+                                ContentValues stationValues = new ContentValues();
+                                stationValues.put(StationEntry.COLUMN_ID, venue.venue.id);
+                                stationValues.put(StationEntry.COLUMN_NAME, venue.venue.nombre);
+                                stationValues.put(StationEntry.COLUMN_ADDRESS, venue.venue.direccion);
+                                stationValues.put(StationEntry.COLUMN_DISTANCE, venue.venue.distancia);
+                                stationValues.put(StationEntry.COLUMN_LATITUDE, venue.venue.lat);
+                                stationValues.put(StationEntry.COLUMN_LONGITUDE, venue.venue.lng);
+
+//                                values[i] = stationValues;
+//                                i++;
+                                getContentResolver().insert(StationEntry.CONTENT_URI, stationValues);
+                            }
+
+//                            getContentResolver().bulkInsert(StationEntry.CONTENT_URI, values);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        Log.e(TAG, "onFailure: ZOMG, ERROR!", t);
+                    }
+                });
             }
         }
     }
