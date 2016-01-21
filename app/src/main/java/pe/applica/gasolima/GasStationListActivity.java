@@ -34,6 +34,7 @@ import com.google.android.gms.location.LocationServices;
 import java.util.List;
 import java.util.Vector;
 
+import pe.applica.gasolima.adapter.StationsAdapter;
 import pe.applica.gasolima.data.StationsContract.StationEntry;
 import pe.applica.gasolima.network.GasoLimaAPI;
 import pe.applica.gasolima.network.model.BaseResponse;
@@ -53,7 +54,8 @@ import retrofit.Retrofit;
  * item details side-by-side using two vertical panes.
  */
 public class GasStationListActivity extends AppCompatActivity
-        implements ConnectionCallbacks, OnConnectionFailedListener, LoaderCallbacks<Cursor> {
+        implements ConnectionCallbacks, OnConnectionFailedListener, LoaderCallbacks<Cursor>,
+        StationsAdapter.StationOnClickHandler {
     private static final String TAG = "GasStationListActivity";
     public static final int LOCATION_PERMISSION = 0;
 
@@ -65,7 +67,7 @@ public class GasStationListActivity extends AppCompatActivity
     private GoogleApiClient mGoogleApiClient;
     private RecyclerView mRecyclerView;
     private Location mLastLocation;
-    private SimpleItemRecyclerViewAdapter mStationsAdapter;
+    private StationsAdapter mStationsAdapter;
 
     /**
      * Identifier for the lader
@@ -80,17 +82,17 @@ public class GasStationListActivity extends AppCompatActivity
     };
 
     // These are indices tied to STATION_COLUMNS
-    static final int COL_STATION_ID = 0;
-    static final int COL_STATION_SERVER_ID = 1;
-    static final int COL_STATION_NAME = 2;
-    static final int COL_STATION_DISTANCE = 3;
+    public static final int COL_STATION_ID = 0;
+    public static final int COL_STATION_SERVER_ID = 1;
+    public static final int COL_STATION_NAME = 2;
+    public static final int COL_STATION_DISTANCE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gasstation_list);
         buildGoogleApiClient();
-        mStationsAdapter = new SimpleItemRecyclerViewAdapter(null);
+        mStationsAdapter = new StationsAdapter(this, this);
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -132,9 +134,9 @@ public class GasStationListActivity extends AppCompatActivity
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(null));
+        recyclerView.setAdapter(new StationsAdapter(this, this));
     }
-
+/*
     public class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
@@ -215,7 +217,7 @@ public class GasStationListActivity extends AppCompatActivity
                 return super.toString() + " '" + mContentView.getText() + "'";
             }
         }
-    }
+    }*/
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -341,5 +343,24 @@ public class GasStationListActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mStationsAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onClick(int position, StationsAdapter.ViewHolder vh) {
+        Log.d(TAG, "onClick: SUCCESS!!!!! pos is " + position);
+        if (mTwoPane) {
+            Bundle arguments = new Bundle();
+            arguments.putString(GasStationDetailFragment.ARG_ITEM_ID, "Sample text");
+            GasStationDetailFragment fragment = new GasStationDetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.gasstation_detail_container, fragment)
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, GasStationDetailActivity.class);
+            intent.putExtra(GasStationDetailFragment.ARG_ITEM_ID, "Sample text");
+
+            startActivity(intent);
+        }
     }
 }
