@@ -35,13 +35,14 @@ public class StationsDbHelper extends SQLiteOpenHelper {
                 StationEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 StationEntry.COLUMN_ADDRESS + " TEXT NOT NULL, " +
                 StationEntry.COLUMN_DISTANCE + " TEXT NOT NULL, " +
+                StationEntry.COLUMN_COMPANY + " TEXT, " +
                 StationEntry.COLUMN_LATITUDE + " REAL NOT NULL, " +
                 StationEntry.COLUMN_LONGITUDE + " REAL NOT NULL, " +
-                StationEntry.COLUMN_GAS84 + " REAL NOT NULL, " +
-                StationEntry.COLUMN_GAS90 + " REAL NOT NULL, " +
-                StationEntry.COLUMN_GAS95 + " REAL NOT NULL, " +
-                StationEntry.COLUMN_GAS97 + " REAL NOT NULL, " +
-                StationEntry.COLUMN_GAS98 + " REAL NOT NULL " +
+                StationEntry.COLUMN_GAS84 + " REAL, " +
+                StationEntry.COLUMN_GAS90 + " REAL, " +
+                StationEntry.COLUMN_GAS95 + " REAL, " +
+                StationEntry.COLUMN_GAS97 + " REAL, " +
+                StationEntry.COLUMN_GAS98 + " REAL, " +
 
                 " UNIQUE (" + StationEntry.COLUMN_ID + ") ON CONFLICT REPLACE " +
 

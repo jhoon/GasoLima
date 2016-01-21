@@ -29,7 +29,8 @@ public class StationsContract {
         public static final String COLUMN_ID = "server_id";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_ADDRESS = "address";
-        public static final String COLUMN_DISTANCE= "distance";
+        public static final String COLUMN_DISTANCE = "distance";
+        public static final String COLUMN_COMPANY = "company";
         public static final String COLUMN_LATITUDE = "latitude";
         public static final String COLUMN_LONGITUDE = "longitude";
         public static final String COLUMN_GAS84 = "gas84";
