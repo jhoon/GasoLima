@@ -2,6 +2,7 @@
 <android.support.v7.widget.GridLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="?attr/listPreferredItemHeightLarge"
     android:background="?attr/selectableItemBackground"
@@ -9,7 +10,7 @@
     >
 
     <ImageView
-        android:id="@+id/icon"
+        android:id="@+id/station_icon"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:src="@mipmap/ic_launcher"
@@ -17,22 +18,25 @@
         app:layout_rowSpan="2" />
 
     <TextView
-        android:id="@+id/station_name"
+        android:id="@+id/station_name_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceListItem"
         android:text="@string/app_name"
+        tools:text="This is the name of the station"
         app:layout_columnSpan="2" />
 
     <TextView
-        android:id="@+id/id"
+        android:id="@+id/station_address_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        tools:text="This is the address."
         android:textAppearance="?attr/textAppearanceListItem"/>
 
     <TextView
-        android:id="@+id/content"
+        android:id="@+id/station_distance_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        tools:text="1.8 km"
         android:textAppearance="?attr/textAppearanceListItem"/>
 </android.support.v7.widget.GridLayout>

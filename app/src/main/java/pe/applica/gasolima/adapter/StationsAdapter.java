@@ -62,8 +62,8 @@ public class StationsAdapter
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         View mView;
-        @Bind(R.id.id) TextView mIdView;
-        @Bind(R.id.content) TextView mContentView;
+        @Bind(R.id.station_distance_textview) TextView mIdView;
+        @Bind(R.id.station_name_textview) TextView mContentView;
 
         public ViewHolder(View view) {
             super(view);
