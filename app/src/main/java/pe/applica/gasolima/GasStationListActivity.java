@@ -2,7 +2,6 @@ package pe.applica.gasolima;
 
 import android.Manifest;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -20,10 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -32,7 +28,6 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.location.LocationServices;
 
 import java.util.List;
-import java.util.Vector;
 
 import pe.applica.gasolima.adapter.StationsAdapter;
 import pe.applica.gasolima.data.StationsContract.StationEntry;
@@ -268,7 +263,7 @@ public class GasStationListActivity extends AppCompatActivity
         Uri uri = StationEntry.buildStationUri(id);
         if (mTwoPane) {
             Bundle arguments = new Bundle();
-            arguments.putString(GasStationDetailFragment.ARG_ITEM_ID, uri.toString());
+            arguments.putParcelable(GasStationDetailFragment.DETAIL_URI, uri);
             GasStationDetailFragment fragment = new GasStationDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
@@ -276,7 +271,7 @@ public class GasStationListActivity extends AppCompatActivity
                     .commit();
         } else {
             Intent intent = new Intent(this, GasStationDetailActivity.class);
-            intent.putExtra(GasStationDetailFragment.ARG_ITEM_ID, uri.toString());
+            intent.setData(uri);
 
             startActivity(intent);
         }
