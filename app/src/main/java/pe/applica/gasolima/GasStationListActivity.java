@@ -263,11 +263,12 @@ public class GasStationListActivity extends AppCompatActivity
     }
 
     @Override
-    public void onClick(int position, StationsAdapter.ViewHolder vh) {
-        Log.d(TAG, "onClick: SUCCESS!!!!! pos is " + position);
+    public void onClick(int id, StationsAdapter.ViewHolder vh) {
+        Log.d(TAG, "onClick: SUCCESS!!!!! pos is " + id);
+        Uri uri = StationEntry.buildStationUri(id);
         if (mTwoPane) {
             Bundle arguments = new Bundle();
-            arguments.putString(GasStationDetailFragment.ARG_ITEM_ID, "Sample text");
+            arguments.putString(GasStationDetailFragment.ARG_ITEM_ID, uri.toString());
             GasStationDetailFragment fragment = new GasStationDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
@@ -275,7 +276,7 @@ public class GasStationListActivity extends AppCompatActivity
                     .commit();
         } else {
             Intent intent = new Intent(this, GasStationDetailActivity.class);
-            intent.putExtra(GasStationDetailFragment.ARG_ITEM_ID, "Sample text");
+            intent.putExtra(GasStationDetailFragment.ARG_ITEM_ID, uri.toString());
 
             startActivity(intent);
         }
