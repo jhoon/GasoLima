@@ -41,8 +41,8 @@ public class StationsAdapter
     public void onBindViewHolder(ViewHolder holder, int position) {
         mCursor.moveToPosition(position);
 
-        holder.mIdView.setText(mCursor.getString(GasStationListActivity.COL_STATION_DISTANCE));
-        holder.mContentView.setText(mCursor.getString(GasStationListActivity.COL_STATION_NAME));
+        holder.mNameView.setText(mCursor.getString(GasStationListActivity.COL_STATION_NAME));
+        holder.mDistanceView.setText(mCursor.getString(GasStationListActivity.COL_STATION_DISTANCE));
     }
 
     public void swapCursor(Cursor newCursor) {
@@ -62,8 +62,8 @@ public class StationsAdapter
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         View mView;
-        @Bind(R.id.station_distance_textview) TextView mIdView;
-        @Bind(R.id.station_name_textview) TextView mContentView;
+        @Bind(R.id.station_name_textview) TextView mNameView;
+        @Bind(R.id.station_distance_textview) TextView mDistanceView;
 
         public ViewHolder(View view) {
             super(view);
@@ -82,7 +82,7 @@ public class StationsAdapter
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mNameView.getText() + "'";
         }
     }
 
