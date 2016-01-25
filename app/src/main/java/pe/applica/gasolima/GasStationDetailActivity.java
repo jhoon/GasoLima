@@ -37,6 +37,7 @@ public class GasStationDetailActivity extends AppCompatActivity {
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
@@ -53,8 +54,7 @@ public class GasStationDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(GasStationDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(GasStationDetailFragment.ARG_ITEM_ID));
+            arguments.putParcelable(GasStationDetailFragment.DETAIL_URI, getIntent().getData());
             GasStationDetailFragment fragment = new GasStationDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
