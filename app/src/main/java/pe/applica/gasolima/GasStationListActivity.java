@@ -265,12 +265,11 @@ public class GasStationListActivity extends AppCompatActivity
                                 stationValues.put(StationEntry.COLUMN_LATITUDE, venue.venue.lat);
                                 stationValues.put(StationEntry.COLUMN_LONGITUDE, venue.venue.lng);
 
-//                                values[i] = stationValues;
-//                                i++;
-                                getContentResolver().insert(StationEntry.CONTENT_URI, stationValues);
+                                values[i] = stationValues;
+                                i++;
                             }
 
-//                            getContentResolver().bulkInsert(StationEntry.CONTENT_URI, values);
+                            getContentResolver().bulkInsert(StationEntry.CONTENT_URI, values);
                         }
                     }
 
