@@ -81,11 +81,17 @@ public class GasStationDetailFragment extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.gasstation_detail, container, false);
 
         if (getArguments().containsKey(DETAIL_URI)) {
             mUri = getArguments().getParcelable(DETAIL_URI);
 
-            Log.d(TAG, "onCreate: mUri: " + mUri.toString());
+            Log.d(TAG, "onCreate: mUri: " + mUri);
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout)activity.findViewById(R.id.toolbar_layout);
@@ -97,12 +103,6 @@ public class GasStationDetailFragment extends Fragment
                 mapView.getMapAsync(this);
             }
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.gasstation_detail, container, false);
 
         ButterKnife.bind(this, rootView);
 
