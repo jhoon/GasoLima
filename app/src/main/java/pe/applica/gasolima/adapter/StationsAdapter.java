@@ -42,6 +42,7 @@ public class StationsAdapter
         mCursor.moveToPosition(position);
 
         holder.mNameView.setText(mCursor.getString(GasStationListActivity.COL_STATION_NAME));
+        holder.mGasesView.setText(mCursor.getString(GasStationListActivity.COL_STATION_GASES));
         holder.mDistanceView.setText(mCursor.getString(GasStationListActivity.COL_STATION_DISTANCE));
     }
 
@@ -63,6 +64,7 @@ public class StationsAdapter
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         View mView;
         @Bind(R.id.station_name_textview) TextView mNameView;
+        @Bind(R.id.station_gases_textview) TextView mGasesView;
         @Bind(R.id.station_distance_textview) TextView mDistanceView;
 
         public ViewHolder(View view) {

@@ -73,7 +73,8 @@ public class GasStationListActivity extends AppCompatActivity
             StationEntry.TABLE_NAME + "." + StationEntry._ID,
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_ID,
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_NAME,
-            StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_DISTANCE
+            StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_DISTANCE,
+            StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_GASES
     };
 
     // These are indices tied to STATION_COLUMNS
@@ -81,6 +82,7 @@ public class GasStationListActivity extends AppCompatActivity
     public static final int COL_STATION_SERVER_ID = 1;
     public static final int COL_STATION_NAME = 2;
     public static final int COL_STATION_DISTANCE = 3;
+    public static final int COL_STATION_GASES = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
