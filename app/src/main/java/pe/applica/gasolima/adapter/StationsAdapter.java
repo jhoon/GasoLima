@@ -8,14 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import pe.applica.gasolima.GasStationListActivity;
 import pe.applica.gasolima.R;
 import pe.applica.gasolima.data.StationsContract;
-import pe.applica.gasolima.dummy.DummyContent;
 
 /**
  * Adapter to be used in the Station List Activity
