@@ -36,6 +36,7 @@ public class StationsDbHelper extends SQLiteOpenHelper {
                 StationEntry.COLUMN_ADDRESS + " TEXT NOT NULL, " +
                 StationEntry.COLUMN_DISTANCE + " TEXT NOT NULL, " +
                 StationEntry.COLUMN_COMPANY + " TEXT, " +
+                StationEntry.COLUMN_GASES + " TEXT, " +
                 StationEntry.COLUMN_LATITUDE + " REAL NOT NULL, " +
                 StationEntry.COLUMN_LONGITUDE + " REAL NOT NULL, " +
                 StationEntry.COLUMN_GAS84 + " REAL, " +
