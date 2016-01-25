@@ -42,6 +42,9 @@ public class GasStationDetailFragment extends Fragment
      */
     public static final String DETAIL_URI = "detail_uri";
 
+    private Double mLat;
+    private Double mLong;
+
     private Uri mUri;
 
     public static final int DETAIL_LOADER = 0;
@@ -50,7 +53,9 @@ public class GasStationDetailFragment extends Fragment
             StationEntry.TABLE_NAME + "." + StationEntry._ID,
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_ID,
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_NAME,
-            StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_DISTANCE
+            StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_DISTANCE,
+            StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_LATITUDE,
+            StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_LONGITUDE
     };
 
     // These are indices tied to STATION_COLUMNS
@@ -58,6 +63,8 @@ public class GasStationDetailFragment extends Fragment
     public static final int COL_STATION_SERVER_ID = 1;
     public static final int COL_STATION_NAME = 2;
     public static final int COL_STATION_DISTANCE = 3;
+    public static final int COL_STATION_LATITUDE = 4;
+    public static final int COL_STATION_LONGITUDE = 5;
 
     @Bind(R.id.gasstation_detail) TextView mTitleView;
     MapView mapView;
@@ -141,11 +148,7 @@ public class GasStationDetailFragment extends Fragment
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        updateGoogleMap();
     }
 
     @Override
@@ -163,12 +166,23 @@ public class GasStationDetailFragment extends Fragment
             Log.d(TAG, "onLoadFinished: THERE'S DATA!");
 
             mTitleView.setText(data.getString(COL_STATION_NAME));
-
+            mLat = Double.parseDouble(data.getString(COL_STATION_LATITUDE));
+            mLong = Double.parseDouble(data.getString(COL_STATION_LONGITUDE));
+            updateGoogleMap();
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    private void updateGoogleMap() {
+        if (mMap != null && mLat != null) {
+            // Add a marker in Sydney and move the camera
+            LatLng markerLoc = new LatLng(mLat, mLong);
+            mMap.addMarker(new MarkerOptions().position(markerLoc).title("Marker for Station"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLoc, 15));
+        }
     }
 }
