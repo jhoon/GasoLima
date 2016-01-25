@@ -177,6 +177,7 @@ public class GasStationListActivity extends AppCompatActivity
                                 stationValues.put(StationEntry.COLUMN_DISTANCE, venue.venue.distancia);
                                 stationValues.put(StationEntry.COLUMN_LATITUDE, venue.venue.lat);
                                 stationValues.put(StationEntry.COLUMN_LONGITUDE, venue.venue.lng);
+                                stationValues.put(StationEntry.COLUMN_GASES, venue.venue.generateGasesString());
 
                                 values[i] = stationValues;
                                 i++;
