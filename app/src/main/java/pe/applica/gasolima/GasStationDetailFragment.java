@@ -93,7 +93,7 @@ public class GasStationDetailFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_detail_ref, container, false);
 
         if (getArguments().containsKey(DETAIL_URI)) {
             mUri = getArguments().getParcelable(DETAIL_URI);
