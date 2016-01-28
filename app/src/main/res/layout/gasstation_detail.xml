@@ -17,6 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <include layout="@layout/gasstation_list_content" />
+
     <TextView
         android:id="@+id/detail_address_label_textview"
         android:fontFamily="sans-serif"

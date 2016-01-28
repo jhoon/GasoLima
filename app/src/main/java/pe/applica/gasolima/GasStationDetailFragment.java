@@ -54,6 +54,8 @@ public class GasStationDetailFragment extends Fragment
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_ID,
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_NAME,
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_DISTANCE,
+            StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_ADDRESS,
+            StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_GASES,
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_LATITUDE,
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_LONGITUDE
     };
@@ -63,10 +65,15 @@ public class GasStationDetailFragment extends Fragment
     public static final int COL_STATION_SERVER_ID = 1;
     public static final int COL_STATION_NAME = 2;
     public static final int COL_STATION_DISTANCE = 3;
-    public static final int COL_STATION_LATITUDE = 4;
-    public static final int COL_STATION_LONGITUDE = 5;
+    public static final int COL_STATION_ADDRESS = 4;
+    public static final int COL_STATION_GASES = 5;
+    public static final int COL_STATION_LATITUDE = 6;
+    public static final int COL_STATION_LONGITUDE = 7;
 
-    @Bind(R.id.gasstation_detail) TextView mTitleView;
+    @Bind(R.id.station_name_textview) TextView mTitleView;
+    @Bind(R.id.station_gases_textview) TextView mGasesView;
+    @Bind(R.id.detail_address_textview) TextView mAddressView;
+    @Bind(R.id.detail_distance_textview) TextView mDistanceView;
     MapView mapView;
 
     GoogleMap mMap;
@@ -166,6 +173,9 @@ public class GasStationDetailFragment extends Fragment
             Log.d(TAG, "onLoadFinished: THERE'S DATA!");
 
             mTitleView.setText(data.getString(COL_STATION_NAME));
+            mGasesView.setText(data.getString(COL_STATION_GASES));
+            mDistanceView.setText(data.getString(COL_STATION_DISTANCE));
+            mAddressView.setText(data.getString(COL_STATION_ADDRESS));
             mLat = Double.parseDouble(data.getString(COL_STATION_LATITUDE));
             mLong = Double.parseDouble(data.getString(COL_STATION_LONGITUDE));
             updateGoogleMap();
