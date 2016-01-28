@@ -27,7 +27,7 @@
                                             android:layout_marginRight="16dp"
                                             app:layoutManager="LinearLayoutManager"
                                             tools:context="pe.applica.gasolima.GasStationListActivity"
-                                            tools:listitem="@layout/gasstation_list_content"/>
+                                            tools:listitem="@layout/list_item_gasstation"/>
 
     <FrameLayout
         android:id="@+id/gasstation_detail_container"

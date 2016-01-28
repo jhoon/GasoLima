@@ -33,7 +33,7 @@ public class StationsAdapter
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.gasstation_list_content, parent, false);
+                .inflate(R.layout.list_item_gasstation, parent, false);
         return new ViewHolder(view);
     }
 

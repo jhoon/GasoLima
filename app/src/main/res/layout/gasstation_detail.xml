@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <include layout="@layout/gasstation_list_content" />
+    <include layout="@layout/list_item_gasstation" />
 
     <TextView
         android:id="@+id/detail_address_label_textview"
