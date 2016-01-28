@@ -74,7 +74,7 @@ public class GasStationDetailFragment extends Fragment
     @Bind(R.id.station_gases_textview) TextView mGasesView;
     @Bind(R.id.detail_address_textview) TextView mAddressView;
     @Bind(R.id.detail_distance_textview) TextView mDistanceView;
-    MapView mapView;
+    @Bind(R.id.detail_map) MapView mapView;
 
     GoogleMap mMap;
 
@@ -93,25 +93,16 @@ public class GasStationDetailFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.gasstation_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         if (getArguments().containsKey(DETAIL_URI)) {
             mUri = getArguments().getParcelable(DETAIL_URI);
-
             Log.d(TAG, "onCreate: mUri: " + mUri);
-
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout)activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                // Referencing the map from the toolbar
-                // (won't work on tablets... for now)
-                mapView = (MapView)activity.findViewById(R.id.detail_map);
-                mapView.onCreate(savedInstanceState);
-                mapView.getMapAsync(this);
-            }
         }
 
         ButterKnife.bind(this, rootView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
 
         return rootView;
     }
