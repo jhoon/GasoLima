@@ -2,6 +2,7 @@ package pe.applica.gasolima.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import pe.applica.gasolima.GasStationListActivity;
+import pe.applica.gasolima.ItemChoiceManager;
 import pe.applica.gasolima.R;
 import pe.applica.gasolima.data.StationsContract;
 
@@ -24,10 +26,13 @@ public class StationsAdapter
     private Cursor mCursor;
     private final Context mContext;
     private final StationOnClickHandler mClickHandler;
+    private final ItemChoiceManager mICM;
 
-    public StationsAdapter(Context context, StationOnClickHandler clickHandler) {
+    public StationsAdapter(Context context, StationOnClickHandler clickHandler, int choiceMode) {
         mContext = context;
         mClickHandler = clickHandler;
+        mICM = new ItemChoiceManager(this);
+        mICM.setChoiceMode(choiceMode);
     }
 
     @Override
@@ -44,6 +49,20 @@ public class StationsAdapter
         holder.mNameView.setText(mCursor.getString(GasStationListActivity.COL_STATION_NAME));
         holder.mGasesView.setText(mCursor.getString(GasStationListActivity.COL_STATION_GASES));
         holder.mDistanceView.setText(mCursor.getString(GasStationListActivity.COL_STATION_DISTANCE));
+
+        mICM.onBindViewHolder(holder, position);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        mICM.onRestoreInstanceState(savedInstanceState);
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        mICM.onSaveInstanceState(outState);
+    }
+
+    public int getSelectedItemPosition() {
+        return mICM.getSelectedItemPosition();
     }
 
     public void swapCursor(Cursor newCursor) {
@@ -80,6 +99,7 @@ public class StationsAdapter
             mCursor.moveToPosition(adapterPosition);
             int idColumnIndex = mCursor.getColumnIndex(StationsContract.StationEntry._ID);
             mClickHandler.onClick(mCursor.getInt(idColumnIndex), this);
+            mICM.onClick(this);
         }
 
         @Override
