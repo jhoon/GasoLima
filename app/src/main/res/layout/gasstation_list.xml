@@ -6,6 +6,7 @@
                                         xmlns:tools="http://schemas.android.com/tools"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
+                                        app:elevation="8dp"
                                         app:layoutManager="LinearLayoutManager"
                                         tools:context="pe.applica.gasolima.GasStationListActivity"
                                         tools:listitem="@layout/list_item_gasstation"/>
