@@ -80,6 +80,13 @@ public class StationsAdapter
         return mCursor.getCount();
     }
 
+    public void selectView(RecyclerView.ViewHolder viewHolder) {
+        if ( viewHolder instanceof ViewHolder) {
+            ViewHolder svf = (ViewHolder) viewHolder;
+            svf.onClick(svf.itemView);
+        }
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         View mView;
         @Bind(R.id.station_name_textview) TextView mNameView;
