@@ -23,6 +23,8 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -95,6 +97,12 @@ public class GasStationListActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gasstation_list);
+
+        // Start the Analytics Tracker
+        ((GasoLimaApp)getApplication()).startTracking();
+
+        Tracker tracker = ((GasoLimaApp)getApplication()).getTracker();
+        tracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         if (findViewById(R.id.gasstation_detail_container) != null) {
             // The detail container view will be present only in the
