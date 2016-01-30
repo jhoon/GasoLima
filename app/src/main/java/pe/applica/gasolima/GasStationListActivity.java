@@ -1,7 +1,6 @@
 package pe.applica.gasolima;
 
 import android.Manifest;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -33,18 +32,9 @@ import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationServices;
 
-import java.util.List;
-
 import pe.applica.gasolima.adapter.StationsAdapter;
 import pe.applica.gasolima.data.StationsContract.StationEntry;
-import pe.applica.gasolima.network.GasoLimaAPI;
-import pe.applica.gasolima.network.model.BaseResponse;
-import pe.applica.gasolima.network.model.Venue;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import pe.applica.gasolima.network.StationListTask;
 
 /**
  * An activity representing a list of GasStations. This activity
@@ -194,48 +184,8 @@ public class GasStationListActivity extends AppCompatActivity
                         ", long " + location.getLongitude());
                 mLastLocation = location;
 
-                // Connecting to retrofit
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(getString(R.string.app_endpoint))
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-
-                GasoLimaAPI service = retrofit.create(GasoLimaAPI.class);
-                Call<BaseResponse> stationsCall = service.getStations(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                stationsCall.enqueue(new Callback<BaseResponse>() {
-                    @Override
-                    public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
-                        if (response.isSuccess()) {
-                            Log.i(TAG, "onResponse: WE DID IT!!!");
-                            List<Venue> venues = response.body().response;
-                            ContentValues[] values = new ContentValues[venues.size()];
-                            int i = 0;
-
-                            for (Venue venue : venues) {
-                                Log.d(TAG, "onResponse: venues~ " + venue.venue.id + " nombre: " + venue.venue.nombre);
-
-                                ContentValues stationValues = new ContentValues();
-                                stationValues.put(StationEntry.COLUMN_ID, venue.venue.id);
-                                stationValues.put(StationEntry.COLUMN_NAME, venue.venue.nombre);
-                                stationValues.put(StationEntry.COLUMN_ADDRESS, venue.venue.direccion);
-                                stationValues.put(StationEntry.COLUMN_DISTANCE, venue.venue.distancia);
-                                stationValues.put(StationEntry.COLUMN_LATITUDE, venue.venue.lat);
-                                stationValues.put(StationEntry.COLUMN_LONGITUDE, venue.venue.lng);
-                                stationValues.put(StationEntry.COLUMN_GASES, venue.venue.generateGasesString());
-
-                                values[i] = stationValues;
-                                i++;
-                            }
-
-                            getContentResolver().bulkInsert(StationEntry.CONTENT_URI, values);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        Log.e(TAG, "onFailure: ZOMG, ERROR!", t);
-                    }
-                });
+                StationListTask task = new StationListTask(this);
+                task.execute(location);
             }
         }
     }
