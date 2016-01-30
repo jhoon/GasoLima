@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -198,6 +200,10 @@ public class GasStationDetailFragment extends Fragment
             if (mTransitionAnimation) {
                 getActivity().supportStartPostponedEnterTransition();
             }
+
+            Tracker tracker = ((GasoLimaApp)getActivity().getApplication()).getTracker();
+            tracker.setScreenName("Detail Screen: " + data.getString(COL_STATION_NAME));
+            tracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
     }
 
