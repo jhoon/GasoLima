@@ -6,6 +6,7 @@
     android:id="@+id/detail_additional_pane"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/colorBackground"
     android:orientation="vertical" >
 
     <include layout="@layout/list_item_gasstation" />
@@ -17,6 +18,7 @@
         android:text="@string/label_address"
         android:paddingBottom="0dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@color/titleColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/detail_padding"
@@ -46,6 +48,7 @@
         android:gravity="center_vertical"
         android:text="@string/label_distance"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@color/titleColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/detail_padding"
