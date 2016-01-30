@@ -1,10 +1,13 @@
 package pe.applica.gasolima;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -75,6 +78,7 @@ public class GasStationDetailFragment extends Fragment
     @Bind(R.id.detail_address_textview) TextView mAddressView;
     @Bind(R.id.detail_distance_textview) TextView mDistanceView;
     @Bind(R.id.detail_map) MapView mapView;
+    @Bind(R.id.fab) FloatingActionButton fabView;
 
     GoogleMap mMap;
 
@@ -93,7 +97,7 @@ public class GasStationDetailFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_detail_ref, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_detail_ref, container, false);
 
         if (getArguments().containsKey(DETAIL_URI)) {
             mUri = getArguments().getParcelable(DETAIL_URI);
@@ -103,6 +107,23 @@ public class GasStationDetailFragment extends Fragment
         ButterKnife.bind(this, rootView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+
+        fabView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMap != null && mLat != null) {
+
+                    Uri gmmIntentUri =  Uri.parse("http://maps.google.com/maps?daddr=" +
+                            mLat + "," + mLong + "("+mTitleView.getText()+")&z=17");
+
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    startActivity(mapIntent);
+                } else {
+                    Snackbar.make(v, R.string.message_directions_not_ready, Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
 
         return rootView;
     }

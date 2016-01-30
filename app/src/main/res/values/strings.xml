@@ -3,4 +3,5 @@
     <string name="title_gasstation_detail">GasStation Detail</string>
     <string name="label_address">Address</string>
     <string name="label_distance">Distance</string>
+    <string name="message_directions_not_ready">Directions not ready yet.</string>
 </resources>
