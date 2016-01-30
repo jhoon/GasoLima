@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView android:id="@+id/gasstation_list"
-                                        android:name="pe.applica.gasolima.GasStationListFragment"
-                                        xmlns:android="http://schemas.android.com/apk/res/android"
-                                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                                        xmlns:tools="http://schemas.android.com/tools"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        app:elevation="8dp"
-                                        app:layoutManager="LinearLayoutManager"
-                                        tools:context="pe.applica.gasolima.GasStationListActivity"
-                                        tools:listitem="@layout/list_item_gasstation"/>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="pe.applica.gasolima.GasStationListActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/gasstation_list"
+        android:name="pe.applica.gasolima.GasStationListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:elevation="8dp"
+        app:layoutManager="LinearLayoutManager"
+        android:layout_above="@+id/adView"
+        tools:listitem="@layout/list_item_gasstation"/>
+
+    <com.google.android.gms.ads.AdView
+        android:id="@id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:adSize="BANNER"
+        app:adUnitId="@string/admob_banner_unitid"
+    />
+</RelativeLayout>

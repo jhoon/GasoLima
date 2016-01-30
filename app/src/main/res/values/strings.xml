@@ -6,4 +6,6 @@
     <string name="message_directions_not_ready">Directions not ready yet.</string>
 
     <string name="transition_name_icon">TN_StationIcon</string>
+
+    <string name="admob_banner_unitid">ca-app-pub-3940256099942544/6300978111</string>
 </resources>
