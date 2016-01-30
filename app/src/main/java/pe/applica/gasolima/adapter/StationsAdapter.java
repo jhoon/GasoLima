@@ -2,20 +2,20 @@ package pe.applica.gasolima.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import pe.applica.gasolima.GasStationListActivity;
+import pe.applica.gasolima.ItemChoiceManager;
 import pe.applica.gasolima.R;
 import pe.applica.gasolima.data.StationsContract;
-import pe.applica.gasolima.dummy.DummyContent;
 
 /**
  * Adapter to be used in the Station List Activity
@@ -27,16 +27,19 @@ public class StationsAdapter
     private Cursor mCursor;
     private final Context mContext;
     private final StationOnClickHandler mClickHandler;
+    private final ItemChoiceManager mICM;
 
-    public StationsAdapter(Context context, StationOnClickHandler clickHandler) {
+    public StationsAdapter(Context context, StationOnClickHandler clickHandler, int choiceMode) {
         mContext = context;
         mClickHandler = clickHandler;
+        mICM = new ItemChoiceManager(this);
+        mICM.setChoiceMode(choiceMode);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.gasstation_list_content, parent, false);
+                .inflate(R.layout.list_item_gasstation, parent, false);
         return new ViewHolder(view);
     }
 
@@ -44,8 +47,23 @@ public class StationsAdapter
     public void onBindViewHolder(ViewHolder holder, int position) {
         mCursor.moveToPosition(position);
 
-        holder.mIdView.setText(mCursor.getString(GasStationListActivity.COL_STATION_DISTANCE));
-        holder.mContentView.setText(mCursor.getString(GasStationListActivity.COL_STATION_NAME));
+        holder.mNameView.setText(mCursor.getString(GasStationListActivity.COL_STATION_NAME));
+        holder.mGasesView.setText(mCursor.getString(GasStationListActivity.COL_STATION_GASES));
+        holder.mDistanceView.setText(mCursor.getString(GasStationListActivity.COL_STATION_DISTANCE));
+
+        mICM.onBindViewHolder(holder, position);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        mICM.onRestoreInstanceState(savedInstanceState);
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        mICM.onSaveInstanceState(outState);
+    }
+
+    public int getSelectedItemPosition() {
+        return mICM.getSelectedItemPosition();
     }
 
     public void swapCursor(Cursor newCursor) {
@@ -63,10 +81,19 @@ public class StationsAdapter
         return mCursor.getCount();
     }
 
+    public void selectView(RecyclerView.ViewHolder viewHolder) {
+        if ( viewHolder instanceof ViewHolder) {
+            ViewHolder svf = (ViewHolder) viewHolder;
+            svf.onClick(svf.itemView);
+        }
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         View mView;
-        @Bind(R.id.id) TextView mIdView;
-        @Bind(R.id.content) TextView mContentView;
+        @Bind(R.id.station_icon) public ImageView mIconView;
+        @Bind(R.id.station_name_textview) public TextView mNameView;
+        @Bind(R.id.station_gases_textview) public TextView mGasesView;
+        @Bind(R.id.station_distance_textview) public TextView mDistanceView;
 
         public ViewHolder(View view) {
             super(view);
@@ -81,11 +108,12 @@ public class StationsAdapter
             mCursor.moveToPosition(adapterPosition);
             int idColumnIndex = mCursor.getColumnIndex(StationsContract.StationEntry._ID);
             mClickHandler.onClick(mCursor.getInt(idColumnIndex), this);
+            mICM.onClick(this);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mNameView.getText() + "'";
         }
     }
 

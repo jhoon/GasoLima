@@ -9,17 +9,19 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.AbsListView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -59,13 +61,18 @@ public class GasStationListActivity extends AppCompatActivity
      * device.
      */
     private boolean mTwoPane;
+    private boolean mAutoSelectView;
     private GoogleApiClient mGoogleApiClient;
     private RecyclerView mRecyclerView;
     private Location mLastLocation;
     private StationsAdapter mStationsAdapter;
+    private int mPosition;
+
+    public static final String SELECTED_KEY = "selected_position";
+    public static final String CURRENT_LOCATION = "current_location";
 
     /**
-     * Identifier for the lader
+     * Identifier for the loader
      */
     private static final int STATIONS_LOADER = 0;
 
@@ -73,7 +80,8 @@ public class GasStationListActivity extends AppCompatActivity
             StationEntry.TABLE_NAME + "." + StationEntry._ID,
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_ID,
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_NAME,
-            StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_DISTANCE
+            StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_DISTANCE,
+            StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_GASES
     };
 
     // These are indices tied to STATION_COLUMNS
@@ -81,31 +89,12 @@ public class GasStationListActivity extends AppCompatActivity
     public static final int COL_STATION_SERVER_ID = 1;
     public static final int COL_STATION_NAME = 2;
     public static final int COL_STATION_DISTANCE = 3;
+    public static final int COL_STATION_GASES = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gasstation_list);
-        buildGoogleApiClient();
-        mStationsAdapter = new StationsAdapter(this, this);
-
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle(getTitle());
-
-        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        View recyclerView = findViewById(R.id.gasstation_list);
-        assert recyclerView != null;
-        mRecyclerView = (RecyclerView)recyclerView;
-        mRecyclerView.setAdapter(mStationsAdapter);
 
         if (findViewById(R.id.gasstation_detail_container) != null) {
             // The detail container view will be present only in the
@@ -113,9 +102,48 @@ public class GasStationListActivity extends AppCompatActivity
             // If this view is present, then the
             // activity should be in two-pane mode.
             mTwoPane = true;
+            mAutoSelectView = true;
+        }
+
+        buildGoogleApiClient();
+        mStationsAdapter = new StationsAdapter(this, this,
+                mTwoPane? AbsListView.CHOICE_MODE_SINGLE:AbsListView.CHOICE_MODE_NONE);
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(getTitle());
+
+        View recyclerView = findViewById(R.id.gasstation_list);
+        assert recyclerView != null;
+        mRecyclerView = (RecyclerView)recyclerView;
+        mRecyclerView.setAdapter(mStationsAdapter);
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SELECTED_KEY)) {
+                mPosition = savedInstanceState.getInt(SELECTED_KEY);
+            }
+            Log.i(TAG, "onCreate: savedInstanceState is not null!");
+            if (savedInstanceState.containsKey(CURRENT_LOCATION)) {
+                Log.i(TAG, "onCreate: let's get the parcelable!");
+                mLastLocation = savedInstanceState.getParcelable(CURRENT_LOCATION);
+            }
+            mStationsAdapter.onRestoreInstanceState(savedInstanceState);
         }
 
         getSupportLoaderManager().initLoader(STATIONS_LOADER, null, this);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mPosition != RecyclerView.NO_POSITION) {
+            outState.putInt(SELECTED_KEY, mPosition);
+        }
+        Log.i(TAG, "onSaveInstanceState: mLastLocation" + mLastLocation);
+        if (mLastLocation != null) {
+            outState.putParcelable(CURRENT_LOCATION, mLastLocation);
+        }
+        mStationsAdapter.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
     }
 
     void buildGoogleApiClient() {
@@ -128,13 +156,15 @@ public class GasStationListActivity extends AppCompatActivity
         }
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new StationsAdapter(this, this));
-    }
-
     @Override
     public void onConnected(Bundle bundle) {
+        if (mLastLocation == null) {
+            Log.i(TAG, "onConnected: IT'S UPDATING... WHY?! WHY?!");
+            updateLocation();
+        }
+    }
 
+    private void updateLocation() {
         // Check for Location Permissions
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -168,7 +198,7 @@ public class GasStationListActivity extends AppCompatActivity
                             int i = 0;
 
                             for (Venue venue : venues) {
-                                Log.i(TAG, "onResponse: venues~ " + venue.venue.id + " nombre: " + venue.venue.nombre);
+                                Log.d(TAG, "onResponse: venues~ " + venue.venue.id + " nombre: " + venue.venue.nombre);
 
                                 ContentValues stationValues = new ContentValues();
                                 stationValues.put(StationEntry.COLUMN_ID, venue.venue.id);
@@ -177,6 +207,7 @@ public class GasStationListActivity extends AppCompatActivity
                                 stationValues.put(StationEntry.COLUMN_DISTANCE, venue.venue.distancia);
                                 stationValues.put(StationEntry.COLUMN_LATITUDE, venue.venue.lat);
                                 stationValues.put(StationEntry.COLUMN_LONGITUDE, venue.venue.lng);
+                                stationValues.put(StationEntry.COLUMN_GASES, venue.venue.generateGasesString());
 
                                 values[i] = stationValues;
                                 i++;
@@ -250,6 +281,28 @@ public class GasStationListActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mStationsAdapter.swapCursor(data);
+        if (mPosition != RecyclerView.NO_POSITION) {
+            mRecyclerView.smoothScrollToPosition(mPosition);
+        }
+        if (data.getCount() > 0) {
+            mRecyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    if (mRecyclerView.getChildCount() > 0) {
+                        mRecyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                        int position = mStationsAdapter.getSelectedItemPosition();
+                        if (position == RecyclerView.NO_POSITION) position = 0;
+                        mRecyclerView.smoothScrollToPosition(position);
+                        RecyclerView.ViewHolder vh = mRecyclerView.findViewHolderForAdapterPosition(position);
+                        if (null != vh && mAutoSelectView) {
+                            mStationsAdapter.selectView(vh);
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+            });
+        }
     }
 
     @Override
@@ -273,7 +326,11 @@ public class GasStationListActivity extends AppCompatActivity
             Intent intent = new Intent(this, GasStationDetailActivity.class);
             intent.setData(uri);
 
-            startActivity(intent);
+            ActivityOptionsCompat activityOptions =
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                            new Pair<View, String>(vh.mIconView, getString(R.string.transition_name_icon)));
+            startActivity(intent, activityOptions.toBundle());
         }
+        mPosition = vh.getAdapterPosition();
     }
 }

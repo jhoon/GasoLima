@@ -38,6 +38,7 @@ public class StationsContract {
         public static final String COLUMN_GAS95 = "gas95";
         public static final String COLUMN_GAS97 = "gas97";
         public static final String COLUMN_GAS98 = "gas98";
+        public static final String COLUMN_GASES = "gases";
 
         public static Uri buildStationUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);

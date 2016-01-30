@@ -1,10 +1,13 @@
 package pe.applica.gasolima;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -41,9 +44,11 @@ public class GasStationDetailFragment extends Fragment
      * represents.
      */
     public static final String DETAIL_URI = "detail_uri";
+    public static final String DETAIL_TRANSITION_ANIMATION = "transition_animation";
 
     private Double mLat;
     private Double mLong;
+    private boolean mTransitionAnimation;
 
     private Uri mUri;
 
@@ -54,6 +59,8 @@ public class GasStationDetailFragment extends Fragment
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_ID,
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_NAME,
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_DISTANCE,
+            StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_ADDRESS,
+            StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_GASES,
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_LATITUDE,
             StationEntry.TABLE_NAME + "." + StationEntry.COLUMN_LONGITUDE
     };
@@ -63,11 +70,17 @@ public class GasStationDetailFragment extends Fragment
     public static final int COL_STATION_SERVER_ID = 1;
     public static final int COL_STATION_NAME = 2;
     public static final int COL_STATION_DISTANCE = 3;
-    public static final int COL_STATION_LATITUDE = 4;
-    public static final int COL_STATION_LONGITUDE = 5;
+    public static final int COL_STATION_ADDRESS = 4;
+    public static final int COL_STATION_GASES = 5;
+    public static final int COL_STATION_LATITUDE = 6;
+    public static final int COL_STATION_LONGITUDE = 7;
 
-    @Bind(R.id.gasstation_detail) TextView mTitleView;
-    MapView mapView;
+    @Bind(R.id.station_name_textview) TextView mTitleView;
+    @Bind(R.id.station_gases_textview) TextView mGasesView;
+    @Bind(R.id.detail_address_textview) TextView mAddressView;
+    @Bind(R.id.detail_distance_textview) TextView mDistanceView;
+    @Bind(R.id.detail_map) MapView mapView;
+    @Bind(R.id.fab) FloatingActionButton fabView;
 
     GoogleMap mMap;
 
@@ -86,25 +99,34 @@ public class GasStationDetailFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.gasstation_detail, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_detail_ref, container, false);
 
         if (getArguments().containsKey(DETAIL_URI)) {
             mUri = getArguments().getParcelable(DETAIL_URI);
-
+            mTransitionAnimation = getArguments().getBoolean(DETAIL_TRANSITION_ANIMATION, false);
             Log.d(TAG, "onCreate: mUri: " + mUri);
-
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout)activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                // Referencing the map from the toolbar
-                // (won't work on tablets... for now)
-                mapView = (MapView)activity.findViewById(R.id.detail_map);
-                mapView.onCreate(savedInstanceState);
-                mapView.getMapAsync(this);
-            }
         }
 
         ButterKnife.bind(this, rootView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
+
+        fabView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMap != null && mLat != null) {
+
+                    Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?daddr=" +
+                            mLat + "," + mLong + "(" + mTitleView.getText() + ")&z=17");
+
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    startActivity(mapIntent);
+                } else {
+                    Snackbar.make(v, R.string.message_directions_not_ready, Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
 
         return rootView;
     }
@@ -166,9 +188,16 @@ public class GasStationDetailFragment extends Fragment
             Log.d(TAG, "onLoadFinished: THERE'S DATA!");
 
             mTitleView.setText(data.getString(COL_STATION_NAME));
+            mGasesView.setText(data.getString(COL_STATION_GASES));
+            mDistanceView.setText(data.getString(COL_STATION_DISTANCE));
+            mAddressView.setText(data.getString(COL_STATION_ADDRESS));
             mLat = Double.parseDouble(data.getString(COL_STATION_LATITUDE));
             mLong = Double.parseDouble(data.getString(COL_STATION_LONGITUDE));
             updateGoogleMap();
+
+            if (mTransitionAnimation) {
+                getActivity().supportStartPostponedEnterTransition();
+            }
         }
     }
 
