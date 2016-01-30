@@ -96,6 +96,9 @@ public class GasStationListActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gasstation_list);
 
+        // Start the Analytics Tracker
+        ((GasoLimaApp)getApplication()).startTracking();
+
         if (findViewById(R.id.gasstation_detail_container) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).
