@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detail_additional_pane"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorBackground"
+    android:orientation="vertical" >
+
+    <include layout="@layout/list_item_gasstation" />
+
+    <TextView
+        android:id="@+id/detail_address_label_textview"
+        android:fontFamily="sans-serif"
+        android:gravity="center_vertical"
+        android:text="@string/label_address"
+        android:paddingBottom="0dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@color/titleColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/detail_padding"
+        android:paddingTop="@dimen/detail_padding"
+        android:paddingRight="@dimen/detail_padding"
+        android:paddingEnd="@dimen/detail_padding"
+        android:paddingStart="@dimen/detail_padding"/>
+
+    <TextView
+        android:id="@+id/detail_address_textview"
+        android:gravity="center_vertical"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        app:layout_gravity="fill"
+        tools:text="This will be the address of the Station"
+        android:paddingTop="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/detail_padding"
+        android:paddingRight="@dimen/detail_padding"
+        android:paddingBottom="@dimen/detail_padding"
+        android:paddingEnd="@dimen/detail_padding"
+        android:paddingStart="@dimen/detail_padding"/>
+
+    <TextView
+        android:id="@+id/detail_distance_label_textview"
+        android:fontFamily="sans-serif"
+        android:gravity="center_vertical"
+        android:text="@string/label_distance"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@color/titleColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/detail_padding"
+        android:paddingTop="@dimen/detail_padding"
+        android:paddingRight="@dimen/detail_padding"
+        android:paddingBottom="0dp"
+        android:paddingEnd="@dimen/detail_padding"
+        android:paddingStart="@dimen/detail_padding"/>
+
+    <TextView
+        android:id="@+id/detail_distance_textview"
+        android:gravity="center_vertical"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        app:layout_gravity="fill"
+        tools:text="100m"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/detail_padding"
+        android:paddingTop="0dp"
+        android:paddingRight="@dimen/detail_padding"
+        android:paddingBottom="@dimen/detail_padding"
+        android:paddingEnd="@dimen/detail_padding"
+        android:paddingStart="@dimen/detail_padding"/>
+</LinearLayout>
