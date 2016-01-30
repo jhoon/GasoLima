@@ -37,6 +37,7 @@ public class GasStationDetailActivity extends AppCompatActivity {
             // using a fragment transaction.
             Bundle arguments = new Bundle();
             arguments.putParcelable(GasStationDetailFragment.DETAIL_URI, getIntent().getData());
+            arguments.putBoolean(GasStationDetailFragment.DETAIL_TRANSITION_ANIMATION, true);
             GasStationDetailFragment fragment = new GasStationDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()

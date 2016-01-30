@@ -44,9 +44,11 @@ public class GasStationDetailFragment extends Fragment
      * represents.
      */
     public static final String DETAIL_URI = "detail_uri";
+    public static final String DETAIL_TRANSITION_ANIMATION = "transition_animation";
 
     private Double mLat;
     private Double mLong;
+    private boolean mTransitionAnimation;
 
     private Uri mUri;
 
@@ -101,6 +103,7 @@ public class GasStationDetailFragment extends Fragment
 
         if (getArguments().containsKey(DETAIL_URI)) {
             mUri = getArguments().getParcelable(DETAIL_URI);
+            mTransitionAnimation = getArguments().getBoolean(DETAIL_TRANSITION_ANIMATION, false);
             Log.d(TAG, "onCreate: mUri: " + mUri);
         }
 
@@ -113,8 +116,8 @@ public class GasStationDetailFragment extends Fragment
             public void onClick(View v) {
                 if (mMap != null && mLat != null) {
 
-                    Uri gmmIntentUri =  Uri.parse("http://maps.google.com/maps?daddr=" +
-                            mLat + "," + mLong + "("+mTitleView.getText()+")&z=17");
+                    Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?daddr=" +
+                            mLat + "," + mLong + "(" + mTitleView.getText() + ")&z=17");
 
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
@@ -191,6 +194,10 @@ public class GasStationDetailFragment extends Fragment
             mLat = Double.parseDouble(data.getString(COL_STATION_LATITUDE));
             mLong = Double.parseDouble(data.getString(COL_STATION_LONGITUDE));
             updateGoogleMap();
+
+            if (mTransitionAnimation) {
+                getActivity().supportStartPostponedEnterTransition();
+            }
         }
     }
 
