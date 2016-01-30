@@ -23,6 +23,8 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
@@ -112,6 +114,10 @@ public class GasStationListActivity extends AppCompatActivity
             mTwoPane = true;
             mAutoSelectView = true;
         }
+
+        AdView adView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
 
         buildGoogleApiClient();
         mStationsAdapter = new StationsAdapter(this, this,
