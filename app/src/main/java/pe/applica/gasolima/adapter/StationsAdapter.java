@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.Bind;
@@ -89,9 +90,10 @@ public class StationsAdapter
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         View mView;
-        @Bind(R.id.station_name_textview) TextView mNameView;
-        @Bind(R.id.station_gases_textview) TextView mGasesView;
-        @Bind(R.id.station_distance_textview) TextView mDistanceView;
+        @Bind(R.id.station_icon) public ImageView mIconView;
+        @Bind(R.id.station_name_textview) public TextView mNameView;
+        @Bind(R.id.station_gases_textview) public TextView mGasesView;
+        @Bind(R.id.station_distance_textview) public TextView mDistanceView;
 
         public ViewHolder(View view) {
             super(view);

@@ -10,9 +10,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -324,7 +326,10 @@ public class GasStationListActivity extends AppCompatActivity
             Intent intent = new Intent(this, GasStationDetailActivity.class);
             intent.setData(uri);
 
-            startActivity(intent);
+            ActivityOptionsCompat activityOptions =
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                            new Pair<View, String>(vh.mIconView, getString(R.string.transition_name_icon)));
+            startActivity(intent, activityOptions.toBundle());
         }
         mPosition = vh.getAdapterPosition();
     }
